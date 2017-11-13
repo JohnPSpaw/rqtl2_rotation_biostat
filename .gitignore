@@ -1,0 +1,6 @@
+*~
+*.o
+*.so
+.Rhistory
+/z/Proj/attie/spaw/plot_compare/plots
+/z/Proj/attie/spaw/abs_diff/computed_data/absdiff.rds
