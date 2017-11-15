@@ -31,7 +31,7 @@ ind_founder_compare <- function(ind, chr, markers){
 	}
 	names(proportion_match) <- c("A","B","C","D","E","F","G","H")
 	print(paste0("Proportion of markers in ",ind," matching founders:"))
-	print(proportion_match)	
+	print(round(proportion_match,4))	
 
 
 
@@ -44,10 +44,10 @@ ind_founder_compare <- function(ind, chr, markers){
 	
 	#determine which genotype is predicted in rqtl2 along selected marker range
 	writeLines("\n r/qrtl2 predicted geno \n")
-	predicted_genos(chr=16,markers=markers,probs=pr_rqtl2)
+	predicted_genos(chr=chr,markers=markers,probs=pr_rqtl2)
 
         writeLines("\n \n doqtl predicted geno \n")
-        predicted_genos(chr=16,markers=markers,probs=pr_doqtl)
+        predicted_genos(chr=chr,markers=markers,probs=pr_doqtl)
 	#writeLines("\n")
 
 
@@ -69,17 +69,22 @@ ind_founder_compare <- function(ind, chr, markers){
 
 predicted_genos <- function(chr, markers,probs) { 
 	predict <- rep(NA,length(markers))
+	print(length(markers))
+	max_prob <- rep(NA,length(markers))
 	count <- 0
 	for(i in markers) {
+		#print(i)
 		count <- count + 1
                 prob_36 <- probs[[chr]][1,,i]
                 predict[count] <- names(which(prob_36 == max(prob_36)))
+		max_prob[count] <- max(prob_36)
 	}
 	predict_freq <- table(predict)
 	print(predict_freq)
+	print(paste0("Prob: ", round(mean(max_prob),3)))
 }
 
 
 
 
-ind_founder_compare(ind=10,chr=16,markers=c(577,870))
+#ind_founder_compare(ind=10,chr=16,markers=c(577,870))

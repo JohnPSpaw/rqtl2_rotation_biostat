@@ -44,14 +44,18 @@ auto_ind_founder_compare <- function(ind, chr, markers){
         #load genotype probs
         pr_rqtl2 <- readRDS(paste0("/z/Proj/attie/kbroman/AttieDO/CalcGenoProb/attieDO_probs_byind/attieDO_probs_",ind_name,".rds"))
         pr_doqtl <- readRDS(paste0("/z/Proj/attie/kbroman/AttieDO/DerivedData/attie_36state_probs/probs4qtl2_",ind_name,".rds"))
+	
+	print("probs loaded")
 
         #determine which genotype is predicted in rqtl2 and doqtl along selected marker range
-        ind_vec[13] <- predicted_geno(chr,markers,probs=pr_rqtl2)
+	ind_vec[13] <- predicted_geno(chr,markers,probs=pr_rqtl2)
+	print("geno done")
 	ind_vec[14] <- predicted_geno_prob(chr,markers,probs=pr_rqtl2)
-
+	print("probs done")
         ind_vec[15] <- predicted_geno(chr,markers,probs=pr_doqtl)
+	print("geno 2 done")
         ind_vec[16] <- predicted_geno_prob(chr,markers,probs=pr_doqtl)
-
+	print("probs 2 done")
         ##### PRINT 8x8 MATRIX OF FOUNDER MATCHES ######
         founder_matrix <- matrix(nrow=8,ncol=8)
         for(i in 1:8) {
@@ -70,7 +74,8 @@ auto_ind_founder_compare <- function(ind, chr, markers){
 	ind_vec[18] <- founder_combo_match(letter1 = rqtl2_geno_str[[1]][1], letter2 = doqtl_geno_str[[1]][1], fmat=founder_matrix)
 
         ind_vec[19] <- paste0(rqtl2_geno_str[[1]][1],doqtl_geno_str[[1]][2])
-        ind_vec[20] <- founder_combo_match(letter1 = rqtl2_geno_str[[1]][1], letter2 = doqtl_geno_str[[1]][2], fmat=founder_matrix)
+	#print(ind_vec)        
+	ind_vec[20] <- founder_combo_match(letter1 = rqtl2_geno_str[[1]][1], letter2 = doqtl_geno_str[[1]][2], fmat=founder_matrix)
 
         ind_vec[21] <- paste0(rqtl2_geno_str[[1]][2],doqtl_geno_str[[1]][1])
         ind_vec[22] <- founder_combo_match(letter1 = rqtl2_geno_str[[1]][2], letter2 = doqtl_geno_str[[1]][1], fmat=founder_matrix)
@@ -90,11 +95,13 @@ predicted_geno <- function(chr, markers,probs) {
         count <- 0
         for(i in markers) {
                 count <- count + 1
-                prob_36 <- probs[[chr]][1,,i]
+		print(i)
+		#print(length(probs[[chr]][1,,i]))
+                prob_36 <- (probs[[chr]][1,,i])
                 predict[count] <- names(which(prob_36 == max(prob_36)))
         }
-	
 	predict_freq <- table(predict)
+	#print(predict_freq)
 	return(names(predict_freq[1]))
 }
 
@@ -103,7 +110,7 @@ predicted_geno_prob <- function(chr, markers,probs) {
         count <- 0
         for(i in markers) {
                 count <- count + 1
-                prob_36 <- probs[[chr]][1,,i]
+                prob_36 <- (probs[[chr]][1,,i])
                 max_prob[count] <- max(prob_36)
         }
 	return(round(mean(max_prob),3))
